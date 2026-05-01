@@ -219,6 +219,22 @@ python3 $SCRIPT info "2d1e1ada"
 
 ---
 
+## 🔍 如何获取会话 ID
+
+会话 ID 的获取途径详见 [FINDING_SESSION_IDS.md](FINDING_SESSION_IDS.md)，这里列个概要：
+
+| 方式 | 平台 | 说明 |
+|------|------|------|
+| **[CC Switch](https://ccswitch.dev)** | 双平台 | macOS 菜单栏 app，可视化浏览，最直观 |
+| **`claude --resume`** | Claude | 终端交互式选择器 |
+| **`codex resume`** | Codex | 终端交互式选择器，支持按名称搜 |
+| **`session_helper.py list`** | 双平台 | 本项目脚本，统一列出两个平台 |
+| **直接看文件** | 双平台 | `~/.claude/` 和 `~/.codex/` 目录 |
+
+ccswitch 显示的 ID = 底层 Claude/Codex 原生 ID，直接用于本 skill，不需要转换。
+
+---
+
 ## 📐 技术细节
 
 ### 会话文件格式
@@ -279,4 +295,4 @@ MIT License - 自由使用、修改、分发。
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — Claude CLI 的会话管理
 - [Codex](https://openai.com/index/codex/) — OpenAI 的编码代理
 - [Craft Agents](https://craftagents.com) — Skill 运行时环境
-- [ccswitch](https://ccswitch.dev) — 多平台会话管理器
+- [CC Switch](https://ccswitch.dev) — 多平台会话管理器
