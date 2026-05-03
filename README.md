@@ -66,6 +66,18 @@
 
 ## 📦 安装
 
+### 前置条件
+
+在安装之前，请确保你的环境满足以下要求：
+
+| 条件 | 说明 |
+|------|------|
+| **Python 3** | 脚本依赖 Python 3.7+，运行 `python3 --version` 确认已安装 |
+| **Claude CLI 和/或 Codex CLI** | 至少安装并使用过其中一个，否则没有会话数据可提取 |
+| **Craft Agents**（可选） | 如果你想用 Skill 模式（自然语言触发），需要先安装 Craft Agents |
+
+> 💡 如果你只想用命令行脚本（见下方「手动使用」章节），不需要 Craft Agents。
+
 ### 方法 1: 克隆到 skills 目录（推荐）
 
 ```bash
@@ -89,9 +101,23 @@ curl -o ~/.agents/skills/resume-session/scripts/session_helper.py \
 chmod +x ~/.agents/skills/resume-session/scripts/session_helper.py
 ```
 
+### 验证安装
+
+安装完成后，运行以下命令验证：
+
+```bash
+python3 ~/.agents/skills/resume-session/scripts/session_helper.py list --hours 24 --platform all
+```
+
+- 如果输出一个 JSON 数组（哪怕是空的 `[]`），说明安装成功 ✅
+- 如果报 `python3: command not found`，需要先安装 Python 3
+- 如果报 `Permission denied`，运行 `chmod +x` 赋予执行权限
+
 ---
 
 ## 🚀 使用场景
+
+> ⚠️ **以下所有对话演示均在 Craft Agents 环境中进行。** 在 Craft Agents 里，你可以用自然语言触发 skill（如"找一下我昨天聊的那个"、"resume session XXXX"）。如果你不在 Craft Agents 环境中，请直接使用命令行脚本，参见下方「手动使用」章节。
 
 ### 场景 1: 额度用完，丝滑转平台
 
@@ -218,6 +244,64 @@ python3 $SCRIPT info "2d1e1ada"
 
 ---
 
+## ❓ 常见问题
+
+<details>
+<summary><b>Q: 运行脚本报 <code>python3: command not found</code></b></summary>
+
+macOS 用户可能需要安装 Python 3：
+```bash
+brew install python3
+```
+Linux 用户：
+```bash
+sudo apt install python3  # Debian/Ubuntu
+sudo dnf install python3  # Fedora
+```
+Windows 用户需要从 [python.org](https://python.org) 下载安装，并确保 `python3` 在 PATH 中。
+</details>
+
+<details>
+<summary><b>Q: 输出空数组 <code>[]</code>，找不到任何会话</b></summary>
+
+可能原因：
+1. Claude CLI / Codex CLI 从未使用过（没有会话数据）
+2. 会话数据不在默认路径下
+3. 时间范围太短 —— 试试 `--hours 168`（一周）
+
+手动检查数据是否存在：
+```bash
+ls ~/.claude/projects/  # Claude CLI 会话
+ls ~/.codex/sessions/   # Codex 会话
+```
+</details>
+
+<details>
+<summary><b>Q: Windows 能用吗？</b></summary>
+
+脚本使用 `~` 路径，在 Windows 上需要确认 `~` 指向正确的用户目录。建议在 WSL (Windows Subsystem for Linux) 中使用，或手动将路径替换为 `%USERPROFILE%`。
+</details>
+
+<details>
+<summary><b>Q: 提取的会话内容不完整 / 被截断</b></summary>
+
+脚本默认将每条消息截断到 2000 字符。如果会话中包含大量代码，部分代码可能会被截断。这是设计上的取舍（避免超出 LLM 上下文窗口）。如需更完整的内容，可以修改 `session_helper.py` 中的 `[:2000]` 限制。
+</details>
+
+<details>
+<summary><b>Q: Codex 会话路径不存在</b></summary>
+
+Codex CLI 的会话存储路径可能随版本变化。如果 `~/.codex/sessions/` 不存在，尝试：
+```bash
+# 查找 Codex 会话文件的实际位置
+find ~ -name "session_index.jsonl" -path "*.codex*" 2>/dev/null
+find ~ -name "rollout-*.jsonl" 2>/dev/null | head -5
+```
+如果找到的路径与脚本中硬编码的不同，请修改 `session_helper.py` 顶部的路径常量。
+</details>
+
+---
+
 ## 🔧 支持的平台
 
 | 平台 | ID 格式 | 文件位置 | 状态 |
@@ -238,7 +322,7 @@ python3 $SCRIPT info "2d1e1ada"
 
 | 方式 | 平台 | 说明 |
 |------|------|------|
-| **[CC Switch](https://ccswitch.dev)** | 双平台 | macOS 菜单栏 app，可视化浏览，最直观 |
+| **[CC Switch](https://github.com/farion1231/cc-switch)** | 双平台 | 跨平台桌面应用（Win/Mac/Linux），可视化浏览会话 |
 | **`claude --resume`** | Claude | 终端交互式选择器 |
 | **`codex resume`** | Codex | 终端交互式选择器，支持按名称搜 |
 | **`session_helper.py list`** | 双平台 | 本项目脚本，统一列出两个平台 |
@@ -308,4 +392,4 @@ MIT License - 自由使用、修改、分发。
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) — Claude CLI 的会话管理
 - [Codex](https://openai.com/index/codex/) — OpenAI 的编码代理
 - [Craft Agents](https://craftagents.com) — Skill 运行时环境
-- [CC Switch](https://ccswitch.dev) — 多平台会话管理器
+- [CC Switch](https://github.com/farion1231/cc-switch) — Claude Code / Codex / Gemini CLI 全方位管理工具

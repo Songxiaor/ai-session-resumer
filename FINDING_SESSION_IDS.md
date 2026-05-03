@@ -6,42 +6,49 @@
 
 ## 方式 1: CC Switch（推荐，最直观）
 
-[CC Switch](https://ccswitch.dev) 是一个 macOS 菜单栏应用，统一管理 Claude CLI、Codex、Gemini 等多个 AI 编码平台的会话。
+[CC Switch](https://github.com/farion1231/cc-switch) 是一个跨平台桌面应用（Windows / macOS / Linux），用于统一管理 Claude Code、Codex、Gemini CLI、OpenCode 和 OpenClaw 等 AI 编码工具的供应商配置、MCP、Skills 和会话历史。
 
 ### 安装
 
-从官网下载：https://ccswitch.dev
+从 GitHub Releases 下载：https://github.com/farion1231/cc-switch/releases
+
+macOS 用户也可以通过 Homebrew 安装：
+```bash
+brew tap farion1231/ccswitch
+brew install --cask cc-switch
+```
 
 ### 找到会话 ID 的步骤
 
-1. **打开 CC Switch**
-   - 菜单栏右上角会出现 CC Switch 图标
-   - 点击图标打开主界面
+> ⚠️ 以下 UI 操作流程基于 CC Switch 的功能描述推断，可能与实际界面有出入。请以 CC Switch 官方文档为准。
 
-2. **进入会话列表**
-   - 主界面左侧导航栏有 **Sessions**（会话）入口
+1. **打开 CC Switch**
+   - 启动应用后，进入主界面
+   - CC Switch 会自动检测本机已安装的 CLI 工具
+
+2. **进入会话管理**
+   - 主界面中有 **Sessions**（会话）入口
    - 点击进入会话管理页面
 
 3. **浏览会话**
    - 会话按时间倒序排列
    - 每个会话显示：
      - 会话名称（通常是第一条用户消息）
-     - 平台标识（Claude / Codex / Gemini）
+     - 平台标识（Claude / Codex / Gemini 等）
      - 最后活跃时间
      - 会话 ID
 
 4. **复制会话 ID**
-   - 点击目标会话，进入详情页
-   - 会话 ID 显示在详情页顶部或元信息区域
-   - 点击 ID 旁边的复制按钮即可
+   - 找到目标会话，复制其 ID
+   - 将 ID 用于本 skill 的命令即可
 
 ### CC Switch 的优势
 
-- **统一视图**：同时看到 Claude 和 Codex 的会话
+- **统一视图**：同时看到多个平台的会话
 - **按平台筛选**：快速过滤只看某个平台的会话
 - **会话搜索**：按关键词搜索会话名称
-- **会话预览**：不用打开终端就能看到会话内容
-- **一键恢复**：可以直接从 CC Switch 启动会话
+- **供应商管理**：一键切换 API 供应商，无需手动编辑配置
+- **MCP / Skills 管理**：统一管理多个工具的插件和技能
 
 ---
 
@@ -89,9 +96,11 @@ codex resume --all
 # 直接指定 ID 恢复
 codex resume <session-id>
 
-# 按名称搜索恢复
+# 按名称搜索恢复（如 Codex 支持此功能）
 codex resume "每日整理知识库网页剪藏"
 ```
+
+> ⚠️ 以上 `codex resume` 的参数（如 `--last`、`--all`、按名称搜索）请以 Codex CLI 官方文档为准。不同版本的参数可能不同。
 
 选择器显示：
 - 会话 ID
@@ -125,20 +134,22 @@ python3 $SCRIPT search "x-ui"
 ```
 
 输出示例：
+> 以下为示例输出格式，实际内容取决于你本机的会话数据。
+
 ```json
 [
   {
     "id": "2d1e1ada-6472-4d04-903b-abf06cbbc0fa",
     "platform": "claude",
-    "name": "看一下这个进度到哪了",
-    "project": "-Users-song-Documents",
-    "time": "2026-05-01T18:39:00"
+    "name": "your-session-name-here",
+    "project": "-Users-yourname-project",
+    "time": "2025-01-01T12:00:00"
   },
   {
     "id": "019de1eb-7da0-7351-9472-a0ef7f1912c8",
     "platform": "codex",
-    "name": "每日整理知识库网页剪藏",
-    "time": "2026-05-01T07:52:00"
+    "name": "your-session-name-here",
+    "time": "2025-01-01T11:00:00"
   }
 ]
 ```

@@ -154,9 +154,11 @@ ccswitch 显示的 ID = 底层 Claude/Codex 会话 ID，直接用于搜索。
 | 情况 | 处理 |
 |------|------|
 | ID 不存在 | 返回 suggestions，列出来让用户选 |
+| suggestions 也为空 | 建议用户先运行 `list --hours 168 --platform all` 扩大范围，如果仍无结果，检查 Claude CLI / Codex CLI 是否已安装并使用过 |
 | 文件损坏 | 报错 + 建议用 list 找其他会话 |
 | 会话太旧（>7天） | 提示可能不完整，仍然尝试 |
-| 两个平台都没找到 | 扩大时间范围重试 |
+| 两个平台都没找到 | 扩大时间范围重试，检查 `~/.claude/` 和 `~/.codex/` 目录是否存在 |
+| python3 不存在 | 提示用户安装 Python 3，macOS: `brew install python3`，Linux: `sudo apt install python3` |
 
 ## 触发词 → 动作映射
 
